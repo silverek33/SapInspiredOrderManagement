@@ -1,0 +1,63 @@
+@model IEnumerable<Customer>
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<section class="page-heading with-actions">
+    <div>
+        <p class="eyebrow">Master data</p>
+        <h1>Customers</h1>
+        <p>Maintain active customer records used by transactional orders.</p>
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Add customer</a>
+    }
+</section>
+
+<form method="get" class="filter-bar">
+    <input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search code, name or tax ID" />
+    <label class="form-check">
+        <input type="checkbox" name="includeInactive" value="true" class="form-check-input" @(ViewBag.IncludeInactive == true ? "checked" : "") />
+        <span class="form-check-label">Include inactive</span>
+    </label>
+    <button type="submit" class="btn btn-secondary">Filter</button>
+</form>
+
+<div class="table-responsive">
+    <table class="table app-table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Tax ID</th>
+                <th>Country</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model)
+            {
+                <tr>
+                    <td>@customer.CustomerCode</td>
+                    <td>@customer.Name</td>
+                    <td>@customer.TaxId</td>
+                    <td>@customer.Country</td>
+                    <td><span class="state-pill @(customer.IsActive ? "state-active" : "state-muted")">@(customer.IsActive ? "Active" : "Inactive")</span></td>
+                    <td class="text-end action-cell">
+                        <a asp-action="Details" asp-route-id="@customer.CustomerId">Details</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@customer.CustomerId">Edit</a>
+                            <form asp-action="ToggleActive" asp-route-id="@customer.CustomerId" method="post">
+                                <button type="submit" class="link-button">@(customer.IsActive ? "Deactivate" : "Activate")</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,49 @@
+@model Customer
+
+<input type="hidden" asp-for="CustomerId" />
+<input type="hidden" asp-for="CreatedAt" />
+
+<div class="form-grid">
+    <div>
+        <label asp-for="CustomerCode" class="form-label"></label>
+        <input asp-for="CustomerCode" class="form-control" />
+        <span asp-validation-for="CustomerCode" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="TaxId" class="form-label"></label>
+        <input asp-for="TaxId" class="form-control" />
+        <span asp-validation-for="TaxId" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Country" class="form-label"></label>
+        <input asp-for="Country" class="form-control" />
+        <span asp-validation-for="Country" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Phone" class="form-label"></label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="form-span">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="availability-toggle form-span">
+        <input asp-for="IsActive" class="form-check-input" />
+        <div>
+            <label asp-for="IsActive" class="form-check-label"></label>
+            <p>When disabled, this customer stays in history but cannot be selected for new orders.</p>
+        </div>
+    </div>
+</div>

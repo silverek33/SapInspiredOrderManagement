@@ -1,0 +1,44 @@
+@model Product
+
+<input type="hidden" asp-for="ProductId" />
+<input type="hidden" asp-for="CreatedAt" />
+
+<div class="form-grid">
+    <div>
+        <label asp-for="ProductCode" class="form-label"></label>
+        <input asp-for="ProductCode" class="form-control" />
+        <span asp-validation-for="ProductCode" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Category" class="form-label"></label>
+        <input asp-for="Category" class="form-control" />
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Currency" class="form-label"></label>
+        <input asp-for="Currency" class="form-control" maxlength="3" />
+        <span asp-validation-for="Currency" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="UnitPrice" class="form-label"></label>
+        <input asp-for="UnitPrice" class="form-control" />
+        <span asp-validation-for="UnitPrice" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="StockQuantity" class="form-label"></label>
+        <input asp-for="StockQuantity" class="form-control" />
+        <span asp-validation-for="StockQuantity" class="text-danger"></span>
+    </div>
+    <div class="availability-toggle form-span">
+        <input asp-for="IsActive" class="form-check-input" />
+        <div>
+            <label asp-for="IsActive" class="form-check-label"></label>
+            <p>When disabled, this product stays in history but cannot be added to new orders.</p>
+        </div>
+    </div>
+</div>

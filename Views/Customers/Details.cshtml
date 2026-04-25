@@ -1,0 +1,45 @@
+@model Customer
+
+@{
+    ViewData["Title"] = "Customer details";
+}
+
+<section class="page-heading with-actions">
+    <div>
+        <p class="eyebrow">Customer</p>
+        <h1>@Model.Name</h1>
+        <p>@Model.CustomerCode · @(Model.IsActive ? "Active" : "Inactive")</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</section>
+
+<section class="detail-grid">
+    <div class="detail-panel">
+        <h2>Master data</h2>
+        <dl>
+            <dt>Tax ID</dt>
+            <dd>@Model.TaxId</dd>
+            <dt>Email</dt>
+            <dd>@Model.Email</dd>
+            <dt>Phone</dt>
+            <dd>@Model.Phone</dd>
+            <dt>Address</dt>
+            <dd>@Model.Address</dd>
+            <dt>Country</dt>
+            <dd>@Model.Country</dd>
+        </dl>
+    </div>
+    <div class="detail-panel">
+        <h2>Order activity</h2>
+        <p class="metric-inline">@Model.SalesOrders.Count orders</p>
+        <div class="stack-list compact">
+            @foreach (var order in Model.SalesOrders.OrderByDescending(order => order.CreatedAt).Take(5))
+            {
+                <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.SalesOrderId" class="list-card">
+                    <span>@order.OrderNumber</span>
+                    <small>@order.Status.GetDisplayName() · @order.TotalAmount.ToString("N2") EUR</small>
+                </a>
+            }
+        </div>
+    </div>
+</section>

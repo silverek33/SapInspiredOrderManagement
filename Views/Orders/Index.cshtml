@@ -1,0 +1,82 @@
+@model OrderListViewModel
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<section class="page-heading with-actions">
+    <div>
+        <p class="eyebrow">Order-to-cash</p>
+        <h1>Orders</h1>
+        <p>Filter and track sales documents across their lifecycle.</p>
+    </div>
+    @if (User.IsInRole("Admin") || User.IsInRole("SalesOperator"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Create order</a>
+    }
+</section>
+
+<form method="get" class="filter-bar order-filter">
+    <select name="status" class="form-select">
+        <option value="">All statuses</option>
+        @foreach (var status in Enum.GetValues<OrderStatus>())
+        {
+            <option value="@status" selected="@(Model.Status == status.ToString())">@status.GetDisplayName()</option>
+        }
+    </select>
+    <select name="customerId" class="form-select">
+        <option value="">All customers</option>
+        @foreach (var customer in Model.Customers)
+        {
+            <option value="@customer.Value" selected="@(Model.CustomerId?.ToString() == customer.Value)">@customer.Text</option>
+        }
+    </select>
+    <select name="priority" class="form-select">
+        <option value="">All priorities</option>
+        @foreach (var priority in Enum.GetValues<OrderPriority>())
+        {
+            <option value="@priority" selected="@(Model.Priority == priority.ToString())">@priority</option>
+        }
+    </select>
+    <input type="date" name="dateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" class="form-control" />
+    <input type="date" name="dateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" class="form-control" />
+    <button type="submit" class="btn btn-secondary">Filter</button>
+</form>
+
+<div class="table-responsive">
+    <table class="table app-table">
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Value</th>
+                <th>Created by</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.Orders)
+            {
+                <tr>
+                    <td>@order.OrderNumber</td>
+                    <td>@order.Customer.Name</td>
+                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                    <td><span class="status-badge status-@order.Status.ToString().ToLowerInvariant()">@order.Status.GetDisplayName()</span></td>
+                    <td>@order.Priority</td>
+                    <td>@order.TotalAmount.ToString("N2") EUR</td>
+                    <td>@order.CreatedByUser.FullName</td>
+                    <td class="text-end action-cell">
+                        <a asp-action="Details" asp-route-id="@order.SalesOrderId">Details</a>
+                        @if ((User.IsInRole("Admin") || User.IsInRole("SalesOperator")) && order.Status == OrderStatus.Draft)
+                        {
+                            <a asp-action="Edit" asp-route-id="@order.SalesOrderId">Edit</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

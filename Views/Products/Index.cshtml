@@ -1,0 +1,65 @@
+@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<section class="page-heading with-actions">
+    <div>
+        <p class="eyebrow">Master data</p>
+        <h1>Products</h1>
+        <p>Maintain sellable products, services and stock visibility.</p>
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Add product</a>
+    }
+</section>
+
+<form method="get" class="filter-bar">
+    <input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search code, name or category" />
+    <label class="form-check">
+        <input type="checkbox" name="includeInactive" value="true" class="form-check-input" @(ViewBag.IncludeInactive == true ? "checked" : "") />
+        <span class="form-check-label">Include inactive</span>
+    </label>
+    <button type="submit" class="btn btn-secondary">Filter</button>
+</form>
+
+<div class="table-responsive">
+    <table class="table app-table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Unit price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.ProductCode</td>
+                    <td>@product.Name</td>
+                    <td>@product.Category</td>
+                    <td>@product.UnitPrice.ToString("N2") @product.Currency</td>
+                    <td>@product.StockQuantity</td>
+                    <td><span class="state-pill @(product.IsActive ? "state-active" : "state-muted")">@(product.IsActive ? "Active" : "Inactive")</span></td>
+                    <td class="text-end action-cell">
+                        <a asp-action="Details" asp-route-id="@product.ProductId">Details</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@product.ProductId">Edit</a>
+                            <form asp-action="ToggleActive" asp-route-id="@product.ProductId" method="post">
+                                <button type="submit" class="link-button">@(product.IsActive ? "Deactivate" : "Activate")</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

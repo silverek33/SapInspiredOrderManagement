@@ -1,0 +1,79 @@
+@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="page-heading">
+    <p class="eyebrow">Operational visibility</p>
+    <h1>Dashboard</h1>
+    <p>Monitor order workload, approval queues and high-priority commitments.</p>
+</section>
+
+<section class="metric-grid">
+    @foreach (var status in Enum.GetValues<OrderStatus>())
+    {
+        var count = Model.StatusCounts.TryGetValue(status, out var value) ? value : 0;
+        <div class="metric-card">
+            <span>@status.GetDisplayName()</span>
+            <strong>@count</strong>
+        </div>
+    }
+    <div class="metric-card metric-accent">
+        <span>Open order value</span>
+        <strong>@Model.OpenOrderValue.ToString("N2") EUR</strong>
+    </div>
+</section>
+
+<section class="content-grid two-columns">
+    <div>
+        <div class="section-title">
+            <h2>Recent orders</h2>
+            <a asp-controller="Orders" asp-action="Index">View all</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table app-table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Status</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.RecentOrders)
+                    {
+                        <tr>
+                            <td><a asp-controller="Orders" asp-action="Details" asp-route-id="@order.SalesOrderId">@order.OrderNumber</a></td>
+                            <td>@order.Customer.Name</td>
+                            <td><span class="status-badge status-@order.Status.ToString().ToLowerInvariant()">@order.Status.GetDisplayName()</span></td>
+                            <td>@order.TotalAmount.ToString("N2") EUR</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <div class="section-title">
+            <h2>High priority</h2>
+            <a asp-controller="Orders" asp-action="Index" asp-route-priority="High">Filter</a>
+        </div>
+        <div class="stack-list">
+            @if (!Model.HighPriorityOrders.Any())
+            {
+                <p class="muted">No high-priority open orders.</p>
+            }
+            @foreach (var order in Model.HighPriorityOrders)
+            {
+                <a class="list-card" asp-controller="Orders" asp-action="Details" asp-route-id="@order.SalesOrderId">
+                    <span>@order.OrderNumber</span>
+                    <strong>@order.Customer.Name</strong>
+                    <small>@order.Priority priority · @order.Status.GetDisplayName()</small>
+                </a>
+            }
+        </div>
+    </div>
+</section>

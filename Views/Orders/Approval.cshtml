@@ -1,0 +1,52 @@
+@model IEnumerable<SalesOrder>
+
+@{
+    ViewData["Title"] = "Approval";
+}
+
+<section class="page-heading">
+    <p class="eyebrow">Manager queue</p>
+    <h1>Approval</h1>
+    <p>Review Submitted orders before fulfillment begins.</p>
+</section>
+
+<div class="table-responsive">
+    <table class="table app-table">
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Requested delivery</th>
+                <th>Priority</th>
+                <th>Value</th>
+                <th>Created by</th>
+                <th class="text-end">Decision</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td><a asp-action="Details" asp-route-id="@order.SalesOrderId">@order.OrderNumber</a></td>
+                    <td>@order.Customer.Name</td>
+                    <td>@order.RequestedDeliveryDate?.ToString("yyyy-MM-dd")</td>
+                    <td>@order.Priority</td>
+                    <td>@order.TotalAmount.ToString("N2") EUR</td>
+                    <td>@order.CreatedByUser.FullName</td>
+                    <td class="text-end decision-cell">
+                        <form asp-action="ChangeStatus" asp-route-id="@order.SalesOrderId" method="post">
+                            <input type="hidden" name="nextStatus" value="@OrderStatus.Approved" />
+                            <input type="hidden" name="comment" value="Approved from manager queue." />
+                            <button type="submit" class="btn btn-sm btn-primary">Approve</button>
+                        </form>
+                        <form asp-action="ChangeStatus" asp-route-id="@order.SalesOrderId" method="post">
+                            <input type="hidden" name="nextStatus" value="@OrderStatus.Cancelled" />
+                            <input type="hidden" name="comment" value="Cancelled from manager queue." />
+                            <button type="submit" class="btn btn-sm btn-secondary">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

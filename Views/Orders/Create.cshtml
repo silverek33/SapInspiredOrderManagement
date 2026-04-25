@@ -1,0 +1,23 @@
+@model CreateOrderViewModel
+
+@{
+    ViewData["Title"] = "Create order";
+}
+
+<section class="page-heading">
+    <p class="eyebrow">Transactional data</p>
+    <h1>Create order</h1>
+    <p>Create a Draft sales order with items copied from product master data.</p>
+</section>
+
+<form asp-action="Create" method="post" class="business-form">
+    <partial name="_OrderForm" model="Model" />
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Draft</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

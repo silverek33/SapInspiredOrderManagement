@@ -1,0 +1,45 @@
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<section class="login-grid">
+    <div class="login-panel">
+        <p class="eyebrow">ERP workflow practice</p>
+        <h1>Order lifecycle cockpit</h1>
+        <p class="lead">Track customers, products, approvals and status history from Draft to Closed.</p>
+
+        <form asp-action="Login" method="post" class="form-stack">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div>
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div>
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Sign in</button>
+        </form>
+
+        <div class="demo-users">
+            <strong>Demo access</strong>
+            <span>Admin: admin@sapdemo.local / Admin123!</span>
+            <span>Sales: sales@sapdemo.local / Sales123!</span>
+            <span>Manager: manager@sapdemo.local / Manager123!</span>
+        </div>
+    </div>
+    <div class="login-photo" role="img" aria-label="Business operations team reviewing order process"></div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

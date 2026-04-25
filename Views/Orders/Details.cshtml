@@ -1,0 +1,109 @@
+@model OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = "Order details";
+    var order = Model.Order;
+}
+
+<section class="page-heading with-actions">
+    <div>
+        <p class="eyebrow">Sales order</p>
+        <h1>@order.OrderNumber</h1>
+        <p>@order.Customer.Name · <span class="status-badge status-@order.Status.ToString().ToLowerInvariant()">@order.Status.GetDisplayName()</span></p>
+    </div>
+    <div class="button-row">
+        @if (Model.CanEdit)
+        {
+            <a asp-action="Edit" asp-route-id="@order.SalesOrderId" class="btn btn-primary">Edit Draft</a>
+        }
+        <a asp-action="Index" class="btn btn-secondary">Back</a>
+    </div>
+</section>
+
+<section class="detail-grid">
+    <div class="detail-panel">
+        <h2>Header</h2>
+        <dl>
+            <dt>Customer</dt>
+            <dd>@order.Customer.CustomerCode - @order.Customer.Name</dd>
+            <dt>Order date</dt>
+            <dd>@order.OrderDate.ToString("yyyy-MM-dd")</dd>
+            <dt>Requested delivery</dt>
+            <dd>@order.RequestedDeliveryDate?.ToString("yyyy-MM-dd")</dd>
+            <dt>Priority</dt>
+            <dd>@order.Priority</dd>
+            <dt>Created by</dt>
+            <dd>@order.CreatedByUser.FullName</dd>
+            <dt>Approved by</dt>
+            <dd>@order.ApprovedByUser?.FullName</dd>
+            <dt>Notes</dt>
+            <dd>@order.Notes</dd>
+        </dl>
+    </div>
+
+    <div class="detail-panel">
+        <h2>Status actions</h2>
+        @if (!Model.AvailableTransitions.Any())
+        {
+            <p class="muted">No further transitions are available for this role and status.</p>
+        }
+        @foreach (var nextStatus in Model.AvailableTransitions)
+        {
+            <form asp-action="ChangeStatus" asp-route-id="@order.SalesOrderId" method="post" class="status-action">
+                <input type="hidden" name="nextStatus" value="@nextStatus" />
+                <input name="comment" class="form-control" placeholder="Optional status comment" />
+                <button type="submit" class="btn btn-primary">Move to @nextStatus.GetDisplayName()</button>
+            </form>
+        }
+    </div>
+</section>
+
+<section class="content-grid two-columns">
+    <div>
+        <div class="section-title">
+            <h2>Items</h2>
+            <strong>@order.TotalAmount.ToString("N2") EUR</strong>
+        </div>
+        <div class="table-responsive">
+            <table class="table app-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Unit price</th>
+                        <th>Line total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in order.Items)
+                    {
+                        <tr>
+                            <td>@item.Product.ProductCode - @item.Product.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.UnitPrice.ToString("N2") @item.Product.Currency</td>
+                            <td>@item.LineTotal.ToString("N2") @item.Product.Currency</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <div class="section-title">
+            <h2>Status history</h2>
+            <span>@order.StatusHistories.Count entries</span>
+        </div>
+        <div class="timeline">
+            @foreach (var history in order.StatusHistories.OrderByDescending(item => item.ChangedAt))
+            {
+                <div class="timeline-item">
+                    <span>@history.ChangedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span>
+                    <strong>@history.OldStatus?.GetDisplayName() -> @history.NewStatus.GetDisplayName()</strong>
+                    <small>@history.ChangedByUser.FullName</small>
+                    <p>@history.Comment</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>

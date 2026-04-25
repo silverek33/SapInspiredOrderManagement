@@ -1,0 +1,34 @@
+@model Product
+
+@{
+    ViewData["Title"] = "Product details";
+}
+
+<section class="page-heading with-actions">
+    <div>
+        <p class="eyebrow">Product</p>
+        <h1>@Model.Name</h1>
+        <p>@Model.ProductCode · @(Model.IsActive ? "Active" : "Inactive")</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</section>
+
+<section class="detail-grid">
+    <div class="detail-panel">
+        <h2>Product data</h2>
+        <dl>
+            <dt>Category</dt>
+            <dd>@Model.Category</dd>
+            <dt>Unit price</dt>
+            <dd>@Model.UnitPrice.ToString("N2") @Model.Currency</dd>
+            <dt>Stock quantity</dt>
+            <dd>@Model.StockQuantity</dd>
+            <dt>Created</dt>
+            <dd>@Model.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+    </div>
+    <div class="detail-panel">
+        <h2>Usage</h2>
+        <p class="metric-inline">@Model.SalesOrderItems.Count order lines</p>
+    </div>
+</section>
