@@ -1,102 +1,102 @@
 # SAP-Inspired Order Management System
 
-A SAP-inspired business application designed to simulate an order lifecycle process from order creation to closure. The project demonstrates workflow logic, status management, business rules, user roles, and database-backed transactional operations in an ERP-like environment.
+This project is a simplified order management system inspired by SAP ERP workflows.  
+It demonstrates how business processes such as order creation, status tracking and role-based operations can be implemented in a structured application.
 
-## Business Context
+The goal of the project is to connect software development with real business logic and process thinking.
 
-The application follows a simplified order-to-cash flow:
+---
 
-Customer -> Sales Order -> Order Items -> Approval -> Fulfillment -> Delivery -> Invoice -> Closure
+## Business context
 
-It is built as a portfolio project for roles such as Junior SAP Consultant, SAP Support, Key User, Business Analyst, Implementation Support, Process Analyst, and IT/Data roles with a business process focus.
+In typical ERP systems, order management involves:
+
+- creating and managing orders
+- tracking order status
+- handling role-based actions (e.g. admin vs user)
+- maintaining data consistency across related entities
+
+This project models a simplified version of that workflow.
+
+---
 
 ## Features
 
-- Cookie-based login with three business roles: Admin, Sales Operator, Manager
-- Customer master data management
-- Product master data management with active/inactive control and stock visibility
-- Sales order creation with order items
-- Automatic line total and order total calculation
-- ERP-like document lifecycle statuses
-- Role-aware status transition rules
-- Manager approval queue
-- Status history tracking for every order
-- Filtering by status, customer, priority and order date
-- Operational dashboard with counts, open order value and high-priority orders
+- Order creation and management
+- Order status tracking (e.g. Created → In Progress → Completed)
+- Role-based access (admin vs user)
+- Structured data model for business entities
+- CRUD operations with validation
+- Separation of business logic from controllers
 
-## Tech Stack
+---
 
+## Tech stack
+
+- ASP.NET Core MVC (.NET 8)
 - C#
-- ASP.NET Core MVC
 - Entity Framework Core
-- SQL Server LocalDB
+- SQL Server
 - Razor Views
-- Bootstrap
 
-## Demo Users
+---
 
-| Role | Email | Password |
-| --- | --- | --- |
-| Admin | admin@sapdemo.local | Admin123! |
-| Sales Operator | sales@sapdemo.local | Sales123! |
-| Manager | manager@sapdemo.local | Manager123! |
+## Domain model
 
-## Database Structure
+Main entities:
 
-Core entities:
+- Order – represents a business transaction
+- User – system user with role
+- Status – represents order lifecycle stage
 
-- Users
-- Customers
-- Products
-- SalesOrders
-- SalesOrderItems
-- StatusHistories
+Relationships:
 
-Key relationships:
+- one user → many orders  
+- one order → one status  
 
-- Customer 1..N SalesOrders
-- SalesOrder 1..N SalesOrderItems
-- Product 1..N SalesOrderItems
-- User 1..N SalesOrders
-- User 1..N StatusHistories
+This reflects real ERP-style data modeling.
 
-## Workflow
+---
 
-Supported status lifecycle:
+## Architecture
 
-Draft -> Submitted -> Approved -> In Fulfillment -> Delivered -> Invoiced -> Closed
+The project separates responsibilities into:
 
-Cancellation is allowed before invoice/closure according to the configured role rules. Closed and Cancelled orders block further status changes.
+- Controllers – request handling
+- Services – business logic
+- Data layer – persistence with EF Core
+- Views – UI layer
 
-Role rules:
+This structure makes the application easier to extend and maintain.
 
-- Sales Operator can create Draft orders, edit Draft orders and submit them.
-- Manager can approve Submitted orders and move approved orders through fulfillment, delivery, invoice and closure.
-- Admin can manage master data and perform all workflow transitions.
+---
 
-## Business Rules
+## Technical decisions
 
-- Orders can only be created for active customers.
-- New order items can only use active products.
-- Orders must contain at least one item before submission.
-- Quantity must be greater than zero.
-- Unit prices are copied from product master data.
-- Total amount is calculated from order items.
-- Invalid status jumps are blocked.
-- Every status change writes a StatusHistory record.
-- Draft orders can be edited; approved, closed and cancelled documents are protected from normal editing.
+- MVC architecture to clearly separate UI and backend logic
+- Entity Framework Core for relational data management
+- Explicit modeling of order status workflow
+- Role-based access to simulate real business environments
 
-## Run Locally
+---
 
-```powershell
-dotnet restore
-dotnet run --urls http://localhost:5127
-```
+## Limitations
 
-The app uses SQL Server LocalDB by default:
+This is a simplified ERP-style system and does not include:
 
-```json
-"DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=SapInspiredOrderManagement;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
-```
+- advanced reporting
+- integration with external systems
+- complex authorization rules
+- workflow automation
 
-The database schema is applied through EF Core migrations, and demo data is created automatically on first run.
+---
+
+## Possible improvements
+
+- add workflow engine for order status transitions
+- add reporting dashboard
+- implement API layer
+- add audit logging
+- integrate with external systems
+
+---
