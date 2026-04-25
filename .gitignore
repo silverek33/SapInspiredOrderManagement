@@ -1,0 +1,15 @@
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.log
+*.db
+*.sqlite
+*.sqlite3
+appsettings.*.local.json
+secrets.json
+TestResults/
+coverage/
+publish/
